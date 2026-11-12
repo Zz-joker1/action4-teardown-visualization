@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101616" />
+    <meta
+      name="description"
+      content="以代码生成的 DJI Osmo Action 4 结构示意模型，交互探索外观、核心部件与参考参数。"
+    />
+    <title>Action 4 / 拆解实验室</title>
+    <link rel="stylesheet" href="action4.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module" src="action4.js"></script>
+  </head>
+  <body>
+    <!--
+      THESIS: An exploded-view workbench, not a product-promo hero.
+      OWN-WORLD: Graphite instrument panels, warm status amber, and measured teal callouts.
+      STORY: Identify the camera, pull its schematic modules apart, and inspect what each does.
+      FIRST VIEWPORT: A large code-built camera between a parts index and a live specification readout.
+      FORM: Operate; a labeled technical bench with direct manipulation as its primary action.
+    -->
+    <a class="skip-link" href="#workbench">跳到拆解工作台</a>
+    <header class="topbar">
+      <a class="brand" href="action4.html" aria-label="Action 4 拆解实验室首页">
+        <span class="brand-mark" aria-hidden="true">A4</span>
+        <span class="brand-name">FIELD / LAB</span>
+      </a>
+      <div class="topbar-title">
+        <span class="topbar-title-main">Osmo Action 4</span>
+        <span class="topbar-divider" aria-hidden="true">/</span>
+        <span class="topbar-title-sub">结构拆解可视化</span>
+      </div>
+      <div class="topbar-status"><span class="status-light"></span>交互模型 <span class="status-divider">·</span> v1.0</div>
+    </header>
+
+    <main id="workbench" class="workbench">
+      <aside class="parts-panel" aria-labelledby="parts-title">
+        <div class="panel-heading">
+          <div>
+            <p class="panel-eyebrow">COMPONENT INDEX</p>
+            <h1 id="parts-title">部件清单</h1>
+          </div>
+          <span class="part-count" id="part-count">09 <span>/ 09</span></span>
+        </div>
+        <p class="panel-note">选择部件，查看结构位置与用途。</p>
+        <div class="part-list" id="part-list" role="group" aria-label="相机部件"></div>
+        <div class="panel-footnote">
+          <span class="footnote-mark" aria-hidden="true">i</span>
+          <p>内部布局为结构示意，不代表官方维修图或精确拆机尺寸。</p>
+        </div>
+      </aside>
+
+      <section class="stage-column" aria-label="3D 相机模型工作区">
+        <div class="stage-toolbar">
+          <div class="stage-state"><span class="live-dot"></span><span id="stage-state">整机视图</span></div>
+          <div class="stage-actions" aria-label="模型操作">
+            <button class="tool-button" id="explode-button" type="button" aria-pressed="false" title="拆解或合拢模型 (E)">
+              <span class="tool-icon" aria-hidden="true">⤢</span><span>拆解</span>
+            </button>
+            <button class="tool-button" id="reset-button" type="button" title="复位模型 (R)">
+              <span class="tool-icon reset-icon" aria-hidden="true">↺</span><span>复位</span>
+            </button>
+          </div>
+        </div>
+        <div class="stage-wrap" id="stage-wrap">
+          <canvas id="model-canvas" aria-label="可交互的 DJI Osmo Action 4 3D 示意模型，拖动旋转，滚轮缩放，点击部件查看"></canvas>
+          <div class="stage-topline" aria-hidden="true">
+            <span>DJI / ACTION 4</span>
+            <span class="topline-coordinates">CAM-01 <i></i> ISOMETRIC</span>
+          </div>
+          <div class="stage-readout" aria-hidden="true">
+            <span class="readout-cross">⌖</span>
+            <span id="view-readout">FRONT / 3⁄4</span>
+          </div>
+          <div class="part-labels" id="part-labels" aria-hidden="true"></div>
+          <div class="model-loading" id="model-loading">
+            <span class="loader-ring"></span>
+            <span>正在构建结构示意模型…</span>
+          </div>
+          <div class="stage-error" id="stage-error" role="alert" hidden>
+            <strong>3D 模型未能载入</strong>
+            <span>请确认网络可访问 Three.js CDN，然后刷新页面。</span>
+          </div>
+          <div class="stage-controls">
+            <p class="interaction-hint"><span class="hint-mouse" aria-hidden="true">⤧</span>拖动旋转 <i></i> 滚轮缩放 <i></i> 点击部件</p>
+            <div class="view-controls" aria-label="视角预设">
+              <button type="button" class="view-button is-current" data-view="front" aria-pressed="true">正面</button>
+              <button type="button" class="view-button" data-view="rear" aria-pressed="false">背面</button>
+              <button type="button" class="view-button" data-view="top" aria-pressed="false">顶部</button>
+            </div>
+          </div>
+        </div>
+        <div class="stage-caption">
+          <span><span class="caption-dot"></span> 可交互 3D 示意模型</span>
+          <span>比例与内部构造为可视化参考</span>
+        </div>
+      </section>
+
+      <aside class="inspector-panel" aria-label="部件详情与产品参数">
+        <section class="selected-part" aria-labelledby="detail-title">
+          <div class="inspector-heading">
+            <p class="panel-eyebrow">SELECTED COMPONENT</p>
+            <span class="selection-index" id="selection-index">01 / 09</span>
+          </div>
+          <h2 id="detail-title">镜头模组</h2>
+          <p class="part-english" id="detail-english">LENS ASSEMBLY</p>
+          <p class="part-description" id="detail-description">
+            超广角镜头组件，负责将外部光线聚焦至影像传感器。前端镜片与镜筒为外观结构示意。
+          </p>
+          <dl class="detail-data" id="detail-data">
+            <div><dt>视角</dt><dd>155°</dd></div>
+            <div><dt>光圈</dt><dd>f/2.8</dd></div>
+            <div><dt>对焦范围</dt><dd>0.4 m 至 ∞</dd></div>
+          </dl>
+          <p class="detail-source" id="detail-source">参数为产品规格参考；结构细节为示意。</p>
+        </section>
+
+        <section class="spec-section" aria-labelledby="spec-title">
+          <div class="section-title-row">
+            <h2 id="spec-title">产品参数</h2>
+            <span class="reference-tag">规格参考</span>
+          </div>
+          <dl class="spec-list">
+            <div><dt>影像传感器</dt><dd>1/1.3″ CMOS</dd></div>
+            <div><dt>最大视频规格</dt><dd>4K / 120 fps</dd></div>
+            <div><dt>防水深度</dt><dd>18 m <small>无防水壳</small></dd></div>
+            <div><dt>电池容量</dt><dd>1,770 mAh</dd></div>
+            <div><dt>外形尺寸</dt><dd>70.5 × 44.2 × 32.8 mm</dd></div>
+            <div><dt>重量</dt><dd>约 145 g</dd></div>
+          </dl>
+          <p class="spec-disclaimer">参数为公开产品规格参考；拆解布局及部件尺寸并非官方维修资料。</p>
+        </section>
+
+        <section class="guide-section" aria-labelledby="guide-title">
+          <div class="section-title-row">
+            <h2 id="guide-title">操作指引</h2>
+            <span class="guide-key">02 STEPS</span>
+          </div>
+          <ol class="guide-list">
+            <li><span class="guide-number">01</span><span>拖动模型可旋转视角，滚轮缩放观察细节。</span></li>
+            <li><span class="guide-number">02</span><span>点击模型或左侧清单，展开部件并查看说明。</span></li>
+          </ol>
+          <p class="keyboard-hint"><kbd>E</kbd> 拆解 / 合拢 <kbd>R</kbd> 复位视角</p>
+        </section>
+      </aside>
+    </main>
+    <footer class="page-footer">
+      <span>OSMO ACTION 4 <i></i> INTERACTIVE EXPLORATION</span>
+      <span>内部结构示意 <i></i> 非官方维修图</span>
+    </footer>
+  </body>
+</html>
